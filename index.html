@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>OMDB Database</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/landing-page.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link rel="shortcut icon" href="img/icon.png" >
+
+</head>
+
+<body>
+
+    <br>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+    
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button id="clear" class="btn btn-danger">CLEAR RESULTS</button>
+                    </span>
+                    <input type="text" id="search-input" class="form-control" placeholder="Movie Title...">
+                    <span class="input-group-btn">
+                        <button id="search" class="btn btn-secondary btn-success" type="button">SEARCH</button>
+                    </span>
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="col-md-12">
+                
+                <h1>Movie Details</h1>
+                <table class="table table-hover" id="imdb">
+                    <thead>
+                        <tr>
+                            <th> Title </th>
+                            <th> Year </th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbodyid"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="node_modules/jquery/src/jquery.js"></script>
+    <script src="css/bootstrap.min.css"></script>
+</body>
+</html>
+
+<script type="text/javascript">
+
+    function tdclick(e){ 
+        var movieName = $(e).text();
+        movieName = encodeURI(movieName);
+        window.location.href = 'https://www.google.com/search?q=' + movieName + '&tbm=vid';
+    }; 
+
+    $(document).ready(function () {
+    
+        var apiKey = "add5d50d";
+    
+        $('#search').click(function() {
+
+            var input = $('#search-input').val(),
+                movieName = encodeURI(input);
+                
+            var url = 'http://www.omdbapi.com/?apikey=' + apiKey + '&s=' + movieName;
+                
+            $.getJSON(url, function (result) {
+                
+                if(result.Search){
+                    result.Search.forEach(function(obj){
+                        var movieID =  obj.imdbID;
+
+                        var tr;
+                        tr = $('<tr style="cursor: pointer;" />');
+                        tr.append("<td onclick='tdclick(this);'>" + obj.Title + "</td>");
+                        tr.append("<td>" + obj.Year + "</td>");
+                        $('#imdb').append(tr);
+                    });
+                }
+            });
+        });
+        
+        $('#clear').click(function() {
+            $("#tbodyid").empty();
+            $("#search-input").val('');
+        });
+    });
+
+</script>
